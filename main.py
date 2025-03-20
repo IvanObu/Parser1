@@ -1,0 +1,4 @@
+from Exel.main_exel import main
+
+if __name__ == '__main__':
+    main()
