@@ -1,16 +1,15 @@
-from itertools import product
-
 from openpyxl import Workbook
-from Sicret import categories
-from Sites_parsers.main_pars import Pars_All1, Pars_All2, Pars_All3
 
-
-def main():
+def export_to_excel(conn):
+    """Экспортирует данные из БД в Excel"""
     wb = Workbook()
     first_sheet = True
-    for category, urls in categories.items():  # Теперь urls — это кортеж из двух URL
-        url1, url2, url3 = urls
+    cursor = conn.cursor()
 
+    cursor.execute("SELECT DISTINCT category FROM products")
+    categories = [row[0] for row in cursor.fetchall()]
+
+    for category in categories:
         if first_sheet:
             ws = wb.active
             ws.title = category
@@ -18,36 +17,18 @@ def main():
         else:
             ws = wb.create_sheet(title=category)
 
-        # Заголовки таблицы
-        ws.append(["Магазин", "Категория","Модель", "Цена", "Наличие"])
+        ws.append(["Магазин", "Категория", "Модель", "Последняя цена", "Наличие"])
 
-        for product in Pars_All1(category, url1, find_all=0):
-            price = int(product["Цена"].replace(" ", ""))
-            # Преобразуем цену в число, если это возможно
-            try:
-                price = int(price)
-            except ValueError:
-                pass
-            ws.append(["Магазин 1", category ,product["Модель"], price, product["Наличие"]])
+        cursor.execute("""
+            SELECT p.store, p.category, p.model, 
+                   (SELECT price FROM prices WHERE product_id = p.id ORDER BY date DESC LIMIT 1) AS last_price,
+                   (SELECT in_stock FROM availability WHERE product_id = p.id ORDER BY date DESC LIMIT 1) AS last_stock
+            FROM products p
+            WHERE p.category = ?
+        """, (category,))
 
-        for product in Pars_All2(category, url2, find_all=0):
-            price = product["Цена"]
-
-            try:
-                price = int(price)
-            except ValueError:
-                pass
-            ws.append(["Магазин 2", category ,product["Модель"], price, product["Наличие"]])
-
-        for product in Pars_All3(url3):
-            price = product["Цена"]
-
-            # Преобразуем цену в число, если это возможно
-            try:
-                price = int(price)  # Или int(price), если цена всегда целая
-            except ValueError:
-                pass
-            ws.append(["Магазин 3", category, product["Модель"], price, product["Наличие"]])
+        for row in cursor.fetchall():
+            ws.append(row)
 
     excel_path = "apple_products.xlsx"
     wb.save(excel_path)

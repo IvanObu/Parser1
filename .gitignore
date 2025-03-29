@@ -2,3 +2,6 @@
 /.venv/
 /apple_products.xlsx
 /.idea/
+/Db/products.db
+/.DS_Store
+

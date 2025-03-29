@@ -2,21 +2,22 @@ headers = {"User-Agent": "CrookedHands/2.0 (EVM x8), CurlyFingers20/1;p"}
 import requests
 from bs4 import BeautifulSoup
 
+
 def Pars_All1(category, url, find_all: int = 0):
     page = 1
     break_out_flag = False
     while True:
-        category_url = f"{url}?PAGEN_1={page}"
+        category_url = f"{url}?PAGEN_2={page}"
         response = requests.get(category_url, headers=headers)
         soup = BeautifulSoup(response.text, "lxml")  # or html.parser
 
-        next_page = soup.find("a", class_="paging__next")
+        next_page = soup.find("a", class_="pagination__link blog-page-next")
         if next_page and (break_out_flag == False):  # checking last page without "next"
-            Cards = soup.find_all("div", class_="prod-card")
+            Cards = soup.find_all("div", class_="prodcard")
             page += 1
 
             for card in Cards:
-                Avail_block = card.find("div", class_="prod-card__count icon-check-green nodesktop")
+                Avail_block = card.find("div", class_="prodcard__status icon-check-green m-yes nodesktop")
                 if Avail_block:
                     Avail = Avail_block.text.strip()
                 elif not find_all:
@@ -25,12 +26,11 @@ def Pars_All1(category, url, find_all: int = 0):
                 else:
                     Avail = "Нет в наличии"
 
-                Description_block = card.find("div", class_="prod-card__title")
+                Description_block = card.find("a", class_="prodcard__name")
                 Description = Description_block.text.strip() if Description_block else "Без названия"
 
-                Price_block = card.find("div", class_="price__now")
-                Price = (Price_block.contents[0].strip() if Price_block else "Без цены")
-
+                Price_block = card.find("div", class_="prodcard__price")
+                Price = (Price_block.contents[0].strip().replace("₽", '') if Price_block else "Без цены")
                 yield {"Модель": Description, "Цена": Price, "Наличие": Avail}
         else:
             break
@@ -91,3 +91,4 @@ def Pars_All3(url):
                 yield {"Модель": Description, "Цена": Price, "Наличие": Avail}
         else:
             break
+
