@@ -30,6 +30,5 @@ def export_to_excel(conn):
         for row in cursor.fetchall():
             ws.append(row)
 
-    excel_path = "apple_products.xlsx"
+    excel_path = "Db/apple_products.xlsx"
     wb.save(excel_path)
-    print(f"Данные успешно сохранены в {excel_path}")

@@ -5,28 +5,28 @@
     ],
     "cpu": {
       "Mac Mini": [
-        "M2 Pro",
         "M4",
+        "M2",
         "M4 Pro",
-        "M2"
+        "M2 Pro"
       ]
     },
     "ram": {
       "Mac Mini": [
+        "8GB",
+        "16GB",
         "64GB",
         "24GB",
         "32GB",
-        "16GB",
-        "48GB",
-        "8GB"
+        "48GB"
       ]
     },
     "storage": {
       "Mac Mini": [
-        "512GB",
-        "1TB",
         "2TB",
-        "256GB"
+        "256GB",
+        "1TB",
+        "512GB"
       ]
     },
     "colors": {
@@ -37,59 +37,61 @@
   },
   "MacBook Air": {
     "models": [
-      "MacBook Air 15",
-      "MacBook Air 13"
+      "MacBook Air 13",
+      "MacBook Air 15"
     ],
     "cpu": {
       "MacBook Air 13": [
-        "M1",
         "M4",
+        "M3",
         "M2",
-        "M3"
+        "M1"
       ],
       "MacBook Air 15": [
         "M4",
-        "M2",
-        "M3"
+        "M3",
+        "M2"
       ]
     },
     "ram": {
       "MacBook Air 13": [
+        "8GB",
         "24GB",
         "16GB",
-        "8GB"
+        "32GB"
       ],
       "MacBook Air 15": [
+        "8GB",
         "24GB",
         "16GB",
-        "8GB"
+        "32GB"
       ]
     },
     "storage": {
       "MacBook Air 13": [
-        "512GB",
-        "256GB"
+        "256GB",
+        "512GB"
       ],
       "MacBook Air 15": [
-        "512GB",
+        "256GB",
         "1TB",
-        "256GB"
+        "512GB"
       ]
     },
     "colors": {
       "MacBook Air 13": [
-        "Starlight",
-        "Blue",
         "Black",
+        "Blue",
+        "Silver",
         "Space Gray",
-        "Silver"
+        "Starlight"
       ],
       "MacBook Air 15": [
-        "Starlight",
-        "Blue",
         "Black",
+        "Blue",
+        "Silver",
         "Space Gray",
-        "Silver"
+        "Starlight"
       ]
     }
   },
@@ -101,50 +103,51 @@
     ],
     "cpu": {
       "MacBook Pro 14": [
-        "M1",
-        "M3",
-        "M2 Pro",
-        "M4 Pro",
-        "M1 Pro",
-        "M2 Max",
-        "M4 Max",
-        "M3 Pro",
         "M4",
-        "M3 Max"
+        "M1 Pro",
+        "M1",
+        "M3 Pro",
+        "M4 Pro",
+        "M3 Max",
+        "M4 Max",
+        "M2 Pro",
+        "M3",
+        "M2 Max"
       ],
       "MacBook Pro 16": [
-        "M2 Pro",
-        "M4 Pro",
         "M1 Pro",
-        "M2 Max",
-        "M4 Max",
         "M3 Pro",
-        "M3 Max"
+        "M4 Pro",
+        "M3 Max",
+        "M4 Max",
+        "M2 Pro",
+        "M2 Max"
       ],
       "MacBook Pro 13": [
-        "M2"
+        "M2",
+        "M1"
       ]
     },
     "ram": {
       "MacBook Pro 14": [
+        "8GB",
+        "128GB",
+        "16GB",
+        "18GB",
         "64GB",
         "24GB",
         "32GB",
-        "128GB",
-        "16GB",
-        "36GB",
-        "18GB",
-        "8GB"
+        "36GB"
       ],
       "MacBook Pro 16": [
-        "24GB",
-        "32GB",
         "128GB",
         "96GB",
         "16GB",
+        "18GB",
+        "24GB",
+        "32GB",
         "48GB",
-        "36GB",
-        "18GB"
+        "36GB"
       ],
       "MacBook Pro 13": [
         "8GB"
@@ -152,33 +155,33 @@
     },
     "storage": {
       "MacBook Pro 14": [
-        "4TB",
-        "4GB",
+        "8GB",
         "2TB",
         "1TB",
+        "4TB",
+        "8TB",
         "512GB",
-        "8GB",
-        "8TB"
+        "4GB"
       ],
       "MacBook Pro 16": [
-        "2TB",
-        "4GB",
-        "4TB",
-        "1TB",
-        "512GB",
         "8GB",
-        "8TB"
+        "2TB",
+        "1TB",
+        "4TB",
+        "8TB",
+        "512GB",
+        "4GB"
       ],
       "MacBook Pro 13": [
-        "512GB",
-        "256GB"
+        "256GB",
+        "512GB"
       ]
     },
     "colors": {
       "MacBook Pro 14": [
         "Space Gray",
-        "Silver",
-        "Black"
+        "Black",
+        "Silver"
       ],
       "MacBook Pro 16": [
         "Space Gray",
@@ -197,36 +200,36 @@
     ],
     "cpu": {
       "iMac 24": [
-        "M1",
         "M4",
-        "M3"
+        "M3",
+        "M1"
       ]
     },
     "ram": {
       "iMac 24": [
-        "32GB",
         "24GB",
         "16GB",
+        "32GB",
         "8GB"
       ]
     },
     "storage": {
       "iMac 24": [
-        "512GB",
-        "1TB",
         "2TB",
-        "256GB"
+        "256GB",
+        "1TB",
+        "512GB"
       ]
     },
     "colors": {
       "iMac 24": [
-        "Purple",
         "Blue",
+        "Silver",
         "Orange",
         "Yellow",
         "Pink",
         "Green",
-        "Silver"
+        "Purple"
       ]
     }
   },
@@ -236,28 +239,28 @@
     ],
     "cpu": {
       "Mac Studio": [
-        "M3 Ultra",
-        "M2 Max",
+        "M2 Ultra",
         "M4 Max",
-        "M2 Ultra"
+        "M3 Ultra",
+        "M2 Max"
       ]
     },
     "ram": {
       "Mac Studio": [
+        "96GB",
+        "192GB",
         "64GB",
         "32GB",
-        "192GB",
-        "96GB",
         "36GB"
       ]
     },
     "storage": {
       "Mac Studio": [
-        "4TB",
-        "4GB",
         "2TB",
+        "4TB",
         "1TB",
-        "512GB"
+        "512GB",
+        "4GB"
       ]
     },
     "colors": {

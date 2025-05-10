@@ -5,14 +5,15 @@
     ],
     "memory": {
       "11": [
-        "128GB",
-        "64GB"
+        "64GB",
+        "128GB"
       ]
     },
     "colors": {
       "11": [
         "White",
-        "Black"
+        "Black",
+        "Purple"
       ]
     }
   },
@@ -23,31 +24,32 @@
     ],
     "memory": {
       "12": [
-        "128GB",
         "64GB",
-        "256GB"
+        "256GB",
+        "128GB"
       ],
       "12 Mini": [
-        "128GB",
         "64GB",
-        "256GB"
+        "256GB",
+        "128GB"
       ]
     },
     "colors": {
       "12": [
-        "Purple",
-        "Blue",
         "Black",
+        "Blue",
         "Red",
-        "Green",
-        "White"
+        "White",
+        "Purple",
+        "Green"
       ],
       "12 Mini": [
-        "Purple",
+        "Black",
         "Blue",
         "Red",
-        "Green",
-        "White"
+        "White",
+        "Purple",
+        "Green"
       ]
     }
   },
@@ -57,140 +59,149 @@
     ],
     "memory": {
       "SE 2022": [
-        "128GB",
         "64GB",
-        "256GB"
+        "256GB",
+        "128GB"
       ]
     },
     "colors": {
       "SE 2022": [
-        "Red",
         "White",
-        "Black"
+        "Black",
+        "Red"
       ]
     }
   },
   "13": {
     "models": [
-      "13 Mini",
-      "13"
+      "13 Pro Max",
+      "13",
+      "13 Mini"
     ],
     "memory": {
       "13": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "13 Mini": [
         "512GB"
+      ],
+      "13 Pro Max": [
+        "128GB"
       ]
     },
     "colors": {
       "13": [
-        "Blue",
         "Black",
+        "Blue",
         "Red",
+        "White",
         "Pink",
-        "Green",
-        "White"
+        "Green"
       ],
       "13 Mini": [
         "Pink"
+      ],
+      "13 Pro Max": [
+        "Sierra Blue (Небесно-Blue)",
+        "Graphite (Графитовый)"
       ]
     }
   },
   "14": {
     "models": [
-      "14 Pro",
       "14 Pro Max",
-      "14 Plus",
-      "14"
+      "14 Pro",
+      "14",
+      "14 Plus"
     ],
     "memory": {
       "14": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "14 Plus": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "14 Pro Max": [
-        "128GB",
+        "256GB",
+        "1TB",
         "512GB",
-        "1TB"
+        "128GB"
       ],
       "14 Pro": [
-        "128GB",
-        "256GB"
+        "256GB",
+        "128GB"
       ]
     },
     "colors": {
       "14": [
-        "Purple",
         "Black",
         "Blue",
         "Red",
+        "White",
         "Yellow",
-        "White"
+        "Purple"
       ],
       "14 Plus": [
-        "Purple",
         "Black",
         "Blue",
         "Red",
+        "White",
         "Yellow",
-        "White"
+        "Purple"
       ],
       "14 Pro Max": [
+        "Black",
         "",
-        "White",
         "Gold",
-        "Black"
+        "White"
       ],
       "14 Pro": [
         "",
-        "Purple",
-        "Black"
+        "Black",
+        "Purple"
       ]
     }
   },
   "16": {
     "models": [
       "16 Plus",
-      "16 Pro Max",
       "16",
-      "16 Pro",
-      "16e"
+      "16e",
+      "16 Pro Max",
+      "16 Pro"
     ],
     "memory": {
       "16e": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "16": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "16 Plus": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "16 Pro": [
-        "128GB",
+        "256GB",
         "512GB",
         "1TB",
-        "256GB"
+        "128GB"
       ],
       "16 Pro Max": [
-        "512GB",
+        "256GB",
         "1TB",
-        "256GB"
+        "512GB"
       ]
     },
     "colors": {
@@ -199,59 +210,59 @@
         "Black"
       ],
       "16": [
-        "White",
+        "Teal",
         "Pink",
         "Black",
-        "Teal"
+        "White"
       ],
       "16 Plus": [
-        "Pink",
-        "Teal",
         "White",
-        "Black"
+        "Teal",
+        "Black",
+        "Pink"
       ],
       "16 Pro": [
-        "Black Titanium",
+        "Natural Titanium",
         "Desert Titanium",
-        "White Titanium",
-        "Natural Titanium"
+        "Black Titanium",
+        "White Titanium"
       ],
       "16 Pro Max": [
-        "Black Titanium",
+        "Natural Titanium",
         "Desert Titanium",
-        "White Titanium",
-        "Natural Titanium"
+        "Black Titanium",
+        "White Titanium"
       ]
     }
   },
   "15": {
     "models": [
       "15 Pro Max",
-      "15 Plus",
       "15",
-      "15 Pro"
+      "15 Pro",
+      "15 Plus"
     ],
     "memory": {
       "15": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "15 Plus": [
-        "128GB",
+        "256GB",
         "512GB",
-        "256GB"
+        "128GB"
       ],
       "15 Pro": [
-        "128GB",
+        "256GB",
         "512GB",
         "1TB",
-        "256GB"
+        "128GB"
       ],
       "15 Pro Max": [
-        "512GB",
+        "256GB",
         "1TB",
-        "256GB"
+        "512GB"
       ]
     },
     "colors": {
@@ -272,15 +283,15 @@
         "Green"
       ],
       "15 Pro": [
+        "Natural Titanium",
         "Black Titanium",
         "Blue Titanium",
-        "White Titanium",
-        "Natural Titanium"
+        "White Titanium"
       ],
       "15 Pro Max": [
+        "Natural Titanium",
         "Black Titanium",
         "Blue Titanium",
-        "Natural Titanium",
         "White Titanium"
       ]
     }

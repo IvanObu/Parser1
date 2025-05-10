@@ -1,5 +1,5 @@
 from gc import callbacks
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, BufferedInputFile
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, BufferedInputFile, FSInputFile
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
@@ -7,7 +7,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from Db.main_db import find_products_by_params, add_to_my_list, is_in_my_list, get_my_list
 from Graphics.main_graphic import generate_price_graph
-from numpy.random import set_state
+
 import sqlite3
 
 import Aio.App.keyboards as kb
@@ -34,9 +34,101 @@ class FilterMFSM(StatesGroup):
     choosing_color = State()
     waiting_for_search_text = State()
 
+class ProfileStates(StatesGroup):
+    changing_name = State()
+
+async def is_user_registered(user_id: int, conn: sqlite3.Connection) -> bool:
+    cursor = conn.cursor()
+    cursor.execute("SELECT 1 FROM User WHERE rowid = ?", (user_id,))
+    return cursor.fetchone() is not None
+
+async def update_user_name(user_id: int, name: str, conn: sqlite3.Connection):
+    cursor = conn.cursor()
+    cursor.execute("INSERT OR REPLACE INTO User (rowid, Name) VALUES (?, ?)", (user_id, name))
+    conn.commit()
+
 @route.message(CommandStart())
 async def cmd_start(message: Message):
-    await message.reply(f"Welcome to thr Apple dewices price analyzer ", reply_markup=kb.main_kb)
+    user_id = message.from_user.id
+    with sqlite3.connect("Db/products.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM User WHERE Us_Id = ?", (user_id,))
+        if not cursor.fetchone():
+            cursor.execute("INSERT INTO User (Us_Id) VALUES (?)", (user_id,))
+            conn.commit()
+        if await is_user_registered(message.from_user.id, conn):
+
+            cursor.execute("SELECT Name FROM User WHERE rowid = ?", (message.from_user.id,))
+            name = cursor.fetchone()[0]
+            await message.answer(
+                f"🖐 Welcome back, {name}!",
+                reply_markup=kb.main_kb
+            )
+        else:
+            await message.answer(
+                "👋 Welcome! Use /reg command to register.",
+                reply_markup=kb.main_kb
+            )
+
+@route.message(Command("reg"))
+async def cmd_reg(message: Message, state: FSMContext):
+    with sqlite3.connect("Db/products.db") as conn:
+        if await is_user_registered(message.from_user.id, conn):
+            cursor = conn.cursor()
+            cursor.execute("SELECT Name FROM User WHERE rowid = ?", (message.from_user.id,))
+            name = cursor.fetchone()[0]
+            await message.answer(
+                f"You're already registered as {name}.\n"
+                "You can change your name in settings.",
+                reply_markup=kb.main_kb
+            )
+        else:
+            await message.answer(
+                "📝 Please enter your name:",
+                reply_markup=kb.cancel_kb
+            )
+            await state.set_state(ProfileStates.changing_name)
+
+@route.message(F.text == "⚙️ Settings")
+async def settings_menu(message: Message):
+    await message.answer(
+        "⚙️ Settings menu:",
+        reply_markup=kb.settings_kb
+    )
+
+@route.message(F.text == "✏️ Смена имени")
+async def start_change_name(message: Message, state: FSMContext):
+    await message.answer(
+        "📝 Enter new name:",
+        reply_markup=kb.cancel_kb
+    )
+    await state.set_state(ProfileStates.changing_name)
+
+@route.message(ProfileStates.changing_name, F.text)
+async def process_name(message: Message, state: FSMContext):
+    if message.text == "❌ Отмена":
+        await state.clear()
+        await message.answer("Action canceled", reply_markup=kb.main_kb)
+        return
+
+    if len(message.text) > 100:
+        await message.answer("Name too long (max 100 chars)")
+        return
+
+    with sqlite3.connect("Db/products.db") as conn:
+        await update_user_name(message.from_user.id, message.text, conn)
+        await message.answer(
+            f"✅ Имя изменено на: {message.text}",
+            reply_markup=kb.main_kb
+        )
+    await state.clear()
+
+@route.message(F.text == "️↩️ Назад")
+async def back_to_main(message: Message):
+    await message.answer(
+        "Main menu:",
+        reply_markup=kb.main_kb
+    )
 
 @route.message(F.text == "🔎 Search")
 async def start_search(message: Message):
@@ -60,6 +152,20 @@ async def back_main_handler(callback: CallbackQuery):
 async def about_stores_handler(message: Message):
     await message.answer("🏬 Описание магазинов:\n[Здесь информация]", reply_markup=kb.back)
 
+@route.message(F.text == "📁 Make exel file")
+async def send_excel_file(message: Message):
+    try:
+
+        file_path = "Db/apple_products.xlsx"
+        file = FSInputFile(file_path, filename="Отчет.xlsx")
+        await message.answer_document(
+            document=file,
+            caption="Ваш Excel-файл с данными 📊"
+        )
+    except FileNotFoundError:
+        await message.answer("Файл не найден 😢")
+    except Exception as e:
+        await message.answer(f"Произошла ошибка")
 
 @route.message(F.text == "⚙️ Settings")
 async def start_search(message: Message):
@@ -72,6 +178,8 @@ async def cmd_start(message: Message):
         text="📖 Инструкция по использованию бота...\n[Описание]:",
         reply_markup=kb.back
     )
+
+
 
 @route.callback_query( F.data== "back_main")
 async def back_to_main_menu(callback: CallbackQuery):
@@ -144,7 +252,7 @@ async def finish_selection(callback: CallbackQuery, state: FSMContext):
         "memory": memory,
         "color": color
     }
-    conn = sqlite3.connect("../Db/products.db")
+    conn = sqlite3.connect("Db/products.db")
     products = find_products_by_params(category="iPhone", filters=filters, conn=conn)
 
     if not products:
@@ -256,7 +364,7 @@ async def finish_mac_selection(callback: CallbackQuery, state: FSMContext):
         "storage": data["storage"],
         "color": data["color"]
     }
-    conn = sqlite3.connect("../Db/products.db")
+    conn = sqlite3.connect("Db/products.db")
     products = find_products_by_params(category="Mac", filters=filters, conn=conn)
 
     if not products:
@@ -274,7 +382,7 @@ async def show_product(callback, product):
         f"🏬 Магазин: {product['store']}\n"
         f"💰 Цена: {product['price']} ₽"
     )
-    conn = sqlite3.connect("../Db/products.db")
+    conn = sqlite3.connect("Db/products.db")
     in_list = is_in_my_list(product["product_id"], conn)
 
     if in_list:
@@ -290,7 +398,7 @@ async def show_product(callback, product):
 @route.callback_query(F.data.startswith("add_"))
 async def handle_add_to_my_list(callback: CallbackQuery):
     product_id = int(callback.data.split("_")[1])
-    conn = sqlite3.connect("../Db/products.db")
+    conn = sqlite3.connect("Db/products.db")
     add_to_my_list(product_id, conn)
     await callback.answer(text="✅ Добавлено в мой список", show_alert=False)
 
@@ -311,7 +419,7 @@ pending_changes = {}
 
 @route.callback_query(F.data == "my_list")
 async def show_my_list_handler(callback: CallbackQuery):
-    conn = sqlite3.connect("../Db/products.db")
+    conn = sqlite3.connect("Db/products.db")
     try:
         products = await get_my_list(conn)
 
@@ -331,21 +439,23 @@ async def show_my_list_handler(callback: CallbackQuery):
                 f"📅 Обновлено: {product['price_date']}"
             )
 
+            # Определяем иконку в зависимости от статуса уведомлений
+            notice_icon = "🔔" if product['notice_status'] == 1 else "🔕"
+
             keyboard = InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
                         InlineKeyboardButton(
                             text="❌ Удалить",
-                            callback_data=f"mark_remove_{product['id']}"  # Изменено на mark_remove
+                            callback_data=f"mark_remove_{product['id']}"
                         ),
                         InlineKeyboardButton(
-                            text="🔔 Уведомления",
+                            text=f"{notice_icon} Уведомления",
                             callback_data=f"notify_{product['id']}"
                         ),
                         InlineKeyboardButton(
-                            text="📈 Истоиря цен",
+                            text="📈 История цен",
                             callback_data=f"graph_{product['id']}"
-
                         )
                     ]
                 ]
@@ -355,12 +465,8 @@ async def show_my_list_handler(callback: CallbackQuery):
 
         confirm_keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
-                [
-                    InlineKeyboardButton(text="✅ Принять изменения", callback_data="confirm_changes")
-                ],
-                [
-                    InlineKeyboardButton(text="🔍 Завершить поиск", callback_data="end_search")
-                ]
+                [InlineKeyboardButton(text="✅ Принять изменения", callback_data="confirm_changes")],
+                [InlineKeyboardButton(text="🔍 Завершить поиск", callback_data="end_search")]
             ]
         )
 
@@ -448,7 +554,7 @@ async def confirm_changes_handler(callback: CallbackQuery):
     try:
         if user_id in pending_changes and (
                 pending_changes[user_id]["to_remove"] or pending_changes[user_id]["to_restore"]):
-            with sqlite3.connect("../Db/products.db") as conn:
+            with sqlite3.connect("Db/products.db") as conn:
                 cursor = conn.cursor()
 
                 for product_id in pending_changes[user_id]["to_remove"]:
@@ -489,19 +595,12 @@ async def end_search_handler(callback: CallbackQuery):
     await callback.message.answer("Поиск завершен", reply_markup=kb.main_kb)
     await callback.answer()
 
-
-import io
-from datetime import datetime
-import matplotlib.pyplot as plt
-import sqlite3
-
-
 @route.callback_query(F.data.startswith("graph_"))
 async def show_price_graph_handler(callback: CallbackQuery):
     try:
         product_id = int(callback.data.split("_")[1])
 
-        with sqlite3.connect("../Db/products.db") as conn:
+        with sqlite3.connect("Db/products.db") as conn:
             graph_img, caption = generate_price_graph(conn, product_id)
 
             if graph_img is None:
@@ -521,3 +620,44 @@ async def show_price_graph_handler(callback: CallbackQuery):
 
     except Exception as e:
         await callback.answer("Произошла ошибка при построении графика", show_alert=True)
+
+
+@route.callback_query(F.data.startswith("notify_"))
+async def toggle_notifications(callback: CallbackQuery):
+    try:
+        product_id = int(callback.data.split("_")[1])
+
+        with sqlite3.connect("Db/products.db") as conn:
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT Notice FROM my_list WHERE product_id = ?", (product_id,))
+            result = cursor.fetchone()
+
+            if not result:
+                await callback.answer("Товар не найден в вашем списке", show_alert=True)
+                return
+
+            current_status = result[0]
+            new_status = 1 if current_status == 0 else 0
+
+            cursor.execute("UPDATE my_list SET Notice = ? WHERE product_id = ?", (new_status, product_id))
+            conn.commit()
+
+            notice_icon = "🔔" if new_status == 1 else "🔕"
+
+            new_keyboard = InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(text="❌ Удалить", callback_data=f"mark_remove_{product_id}"),
+                        InlineKeyboardButton(text=f"{notice_icon} Уведомления", callback_data=f"notify_{product_id}"),
+                        InlineKeyboardButton(text="📈 История цен", callback_data=f"graph_{product_id}")
+                    ]
+                ]
+            )
+
+            await callback.message.edit_reply_markup(reply_markup=new_keyboard)
+            status_text = "включены" if new_status == 1 else "отключены"
+            await callback.answer(f"Уведомления {status_text}")
+
+    except Exception as e:
+        await callback.answer(f"Ошибка при изменении настроек уведомлений {e}", show_alert=True)

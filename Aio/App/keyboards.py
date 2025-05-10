@@ -5,7 +5,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardButton, I
 from Db.main_db import IPHONES, MacBooks
 
 
-def load_iphones_from_json(filename="../Db/iphones.json"):
+def load_iphones_from_json(filename="Db/iphones.json"):
     with open(filename, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -19,7 +19,7 @@ def load_iphones_from_json(filename="../Db/iphones.json"):
 
 IPHONES = load_iphones_from_json()
 
-def load_macbooks_from_json(filename="../Db/macbooks.json"):
+def load_macbooks_from_json(filename="Db/macbooks.json"):
     with open(filename, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -38,8 +38,8 @@ MacBooks = load_macbooks_from_json()
 main_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="🔎 Search")],
-        [KeyboardButton(text="📦 About shops"), KeyboardButton(text="⚙️ Settings")],
-        [KeyboardButton(text="📘 Instruction")]
+        [KeyboardButton(text="📁 Make exel file"), KeyboardButton(text="⚙️ Settings")],
+        [KeyboardButton(text="📘 Instruction"), KeyboardButton(text="📦 About shops")]
     ],
     resize_keyboard=True,
     one_time_keyboard=False
@@ -166,4 +166,19 @@ end_search_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="↩️ Завершить поиск", callback_data="end_search")]
     ]
+)
+
+settings_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="✏️ Смена имени")],
+        [KeyboardButton(text="️↩️ Назад")]
+    ],
+    resize_keyboard=True
+)
+
+cancel_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="❌ Отмена")]
+    ],
+    resize_keyboard=True
 )
