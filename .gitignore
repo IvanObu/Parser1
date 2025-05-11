@@ -1,0 +1,9 @@
+/Secret.py
+/.venv/
+/.idea/
+/Db/products.db
+/.DS_Store
+/Db/apple_products.xlsx
+Db/iphones.json
+Db/macbooks.json
+/Aio/main.py
