@@ -9,6 +9,55 @@ import asyncio
 from aiogram import Bot
 
 
+def create_tables(conn):
+    """Создает таблицы, если их нет"""
+    cursor = conn.cursor()
+    cursor.executescript("""
+    CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        model TEXT NOT NULL,
+        category TEXT NOT NULL,
+        store TEXT NOT NULL,
+        UNIQUE(model, store)
+    );
+
+    CREATE TABLE IF NOT EXISTS prices (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER NOT NULL,
+        price INTEGER NOT NULL,
+        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (product_id) REFERENCES products(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS availability (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER NOT NULL,
+        in_stock BOOLEAN NOT NULL,
+        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (product_id) REFERENCES products(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS my_list (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    Notice INTEGER,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+    );
+    
+    CREATE TABLE IF NOT EXISTS User (
+        Name TEXT,
+        Us_Id INTEGER UNIQUE NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS Settings (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        update_interval_days INTEGER NOT NULL DEFAULT 4
+    );
+    
+    """)
+    cursor.execute("INSERT OR IGNORE INTO Settings (id, update_interval_days) VALUES (1, 4)")
+    conn.commit()
+
+
 async def check_and_notify(conn, bot: Bot, USER_ID):
     if not USER_ID:
         print("⚠️ Пустой USER_ID, уведомление не отправлено")
@@ -61,50 +110,6 @@ async def check_and_notify(conn, bot: Bot, USER_ID):
 
     except Exception as e:
         print(f"❌ Ошибка в check_and_notify: {e}")
-
-def create_tables(conn):
-    """Создает таблицы, если их нет"""
-    cursor = conn.cursor()
-    cursor.executescript("""
-    CREATE TABLE IF NOT EXISTS products (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        model TEXT NOT NULL,
-        category TEXT NOT NULL,
-        store TEXT NOT NULL,
-        UNIQUE(model, store)
-    );
-
-    CREATE TABLE IF NOT EXISTS prices (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        product_id INTEGER NOT NULL,
-        price INTEGER NOT NULL,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (product_id) REFERENCES products(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS availability (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        product_id INTEGER NOT NULL,
-        in_stock BOOLEAN NOT NULL,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (product_id) REFERENCES products(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS my_list (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER NOT NULL,
-    Notice INTEGER,
-    FOREIGN KEY (product_id) REFERENCES products(id)
-    );
-    
-    CREATE TABLE IF NOT EXISTS User (
-        Name TEXT,
-        Us_Id INTEGER UNIQUE
-    );
-    """)
-
-    conn.commit()
-
 
 def save_product(conn, model, category, store, price, in_stock):
     """Сохраняем товар в БД и обновляем цену/наличие"""
@@ -433,7 +438,7 @@ def find_products_by_params(category: str, filters: dict, conn):
     """
     cursor.execute(query, (category,))
     results = cursor.fetchall()
-    conn.close()
+    # conn.close()
 
     filtered = []
     for row in results:
@@ -464,7 +469,7 @@ def add_to_my_list(product_id: int, conn):
             VALUES (?, 0)
         """, (product_id,))
         conn.commit()
-    conn.close()
+    # conn.close()
 
 
 async def get_my_list(conn):
@@ -499,11 +504,27 @@ def is_in_my_list(product_id: int, conn) -> bool:
     cursor = conn.cursor()
     cursor.execute("SELECT id FROM my_list WHERE product_id = ?", (product_id,))
     result = cursor.fetchone()
-    conn.close()
+    # conn.close()
     return result is not None
 
 def remove_from_my_list(product_id: int, conn):
     cursor = conn.cursor()
     cursor.execute("DELETE FROM my_list WHERE product_id = ?", (product_id,))
     conn.commit()
-    conn.close()
+    # conn.close()
+
+def get_update_interval(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT update_interval_days FROM Settings WHERE id = 1")
+    row = cursor.fetchone()
+    return row[0] if row else 4
+
+
+def set_update_interval(conn, days: int):
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO Settings (id, update_interval_days)
+        VALUES (1, ?)
+        ON CONFLICT(id) DO UPDATE SET update_interval_days = excluded.update_interval_days
+    """, (days,))
+    conn.commit()

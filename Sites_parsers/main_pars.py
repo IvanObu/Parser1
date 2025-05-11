@@ -2,7 +2,7 @@ headers = {"User-Agent": "CrookedHands/2.0 (EVM x8), CurlyFingers20/1;p"}
 import requests
 from bs4 import BeautifulSoup
 import re
-
+from Secret import Usl_2
 
 COLOR_REPLACEMENTS_16_15_3 = {
     "пустынный титан": "Desert Titanium",
@@ -114,7 +114,6 @@ COLOR_REPLACEMENTS_14_13_2 = {
     "(Фиолетовый)": "",
     "(Сияющая звезда)": "",
     "Starlight": "White",
-    "(Серебристый)": "",
     "(Желтый)": "",
     "(Космический черный)": "",
     "Space Black": "",
@@ -127,10 +126,6 @@ COLOR_REPLACEMENTS_14_13_2 = {
     "желтый": "Yellow",
     "сияющая звезда": "White",
     "фиолетовый": "Purple",
-    "золотой": "Gold",
-    "(Тёмная ночь)": "",
-    "Midnight": "Black",
-    "синий": "Blue",
     "(Зелёный)": "",
     "(Розовый)": "",
     "без коробки и кабеля":"",
@@ -338,7 +333,7 @@ def Pars_All2(category, url, find_all: int = 0):
 
         if (Cards and (break_out_flag == False) and (False if (category=="Ipad" and page == 2) else True )):  # checking last page without "next"
             if (category == "Mac" and page == 1):
-                url = "https://ipiter.ru/shop/mac/1/page/"
+                url = Usl_2
             page += 1
             for card in Cards:
                 Price_block = card.find("span", class_="price")

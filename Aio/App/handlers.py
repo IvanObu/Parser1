@@ -50,16 +50,20 @@ async def update_user_name(user_id: int, name: str, conn: sqlite3.Connection):
 @route.message(CommandStart())
 async def cmd_start(message: Message):
     user_id = message.from_user.id
+    user_name = message.from_user.full_name
+
     with sqlite3.connect("Db/products.db") as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT 1 FROM User WHERE Us_Id = ?", (user_id,))
-        if not cursor.fetchone():
-            cursor.execute("INSERT INTO User (Us_Id) VALUES (?)", (user_id,))
-            conn.commit()
-        if await is_user_registered(message.from_user.id, conn):
+        cursor.execute("SELECT Name FROM User WHERE Us_Id = ?", (user_id,))
+        user = cursor.fetchone()
 
-            cursor.execute("SELECT Name FROM User WHERE rowid = ?", (message.from_user.id,))
-            name = cursor.fetchone()[0]
+        if not user:
+            cursor.execute("INSERT INTO User (Us_Id, Name) VALUES (?, ?)", (user_id, user_name))
+            conn.commit()
+            name = user_name
+        else:
+            name = user[0]
+        if name:
             await message.answer(
                 f"🖐 Welcome back, {name}!",
                 reply_markup=kb.main_kb
@@ -661,3 +665,35 @@ async def toggle_notifications(callback: CallbackQuery):
 
     except Exception as e:
         await callback.answer(f"Ошибка при изменении настроек уведомлений {e}", show_alert=True)
+
+@route.message(F.text == "⏱ Интервал обновления")
+async def select_interval(message: Message):
+    await message.answer(
+        "Выберите интервал обновления:",
+        reply_markup=kb.get_interval_kb()
+    )
+
+
+@route.message(F.text.regexp(r'^\d+ дней$'))
+async def set_interval(message: Message):
+    try:
+        days = int(message.text.split()[0])
+
+        with sqlite3.connect("Db/products.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT OR REPLACE INTO Settings (id, update_interval_days)
+                VALUES (1, ?)
+            """, (days,))
+            conn.commit()
+
+        await message.answer(
+            f"✅ Интервал обновления изменен на {days} дней",
+            reply_markup=kb.settings_kb
+        )
+
+    except Exception as e:
+        await message.answer(
+            "❌ Ошибка при изменении интервала",
+            reply_markup=kb.settings_kb
+        )

@@ -171,6 +171,7 @@ end_search_kb = InlineKeyboardMarkup(
 settings_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="✏️ Смена имени")],
+        [KeyboardButton(text="⏱ Интервал обновления")],
         [KeyboardButton(text="️↩️ Назад")]
     ],
     resize_keyboard=True
@@ -182,3 +183,11 @@ cancel_kb = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
+
+def get_interval_kb():
+    builder = ReplyKeyboardBuilder()
+    for days in range(1, 11):
+        builder.add(KeyboardButton(text=f"{days} дней"))
+    builder.adjust(3)
+    builder.row(KeyboardButton(text="↩️ Назад"))
+    return builder.as_markup(resize_keyboard=True)
