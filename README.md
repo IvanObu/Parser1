@@ -8,33 +8,44 @@ Approximate scheme of the project
 
 
 First of all we use command /start (to run tg bot). 
+
 ![img_2.png](Documentation/img_2.png)
 
 After this command username and id automatically recorded to "User" table
+
 ![img_3.png](Documentation/img_3.png)
 
 You can change your name or db refresh using "settings" button
+
 ![img_4.png](Documentation/img_4.png)
 
 Also, bot send messages about products changed price from "my_list"
+
 ![img_5.png](Documentation/img_5.png)
 
 Buttons Instr and Ab. shops just give an information about they (I don't add full description)
+
 ![img_6.png](Documentation/img_6.png)
 
 User can get exel file with full information from db
+
 ![img_7.png](Documentation/img_7.png)
+
 ![img_8.png](Documentation/img_8.png)
 
 Searching is a main Kb, here we can find the product we are interested in, add it in "my_list"
+
 ![img_9.png](Documentation/img_9.png)
 
 For example
+
 ![img_10.png](Documentation/img_10.png)
 
 In my list we can see all our goods
+
 ![img_11.png](Documentation/img_11.png)
 
 We can delete them from list, on/off notice (price change) for each product. All changes confirm after "confirm" button.
 Also, we can see graphics of price changing for each product.
+
 ![img_12.png](Documentation/img_12.png)
